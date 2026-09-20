@@ -106,7 +106,7 @@
   let currentTilt = { x: 0, y: 0 };
   let targetTilt = { x: 0, y: 0 };
 
-  const API_BASE = 'http://127.0.0.1:8000';
+  const API_BASE = (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') && window.location.port === '8001' ? 'http://127.0.0.1:8000' : '';
   const ANALYZE_URL = `${API_BASE}/analyze`;
   const GENERATE_URL = `${API_BASE}/generate`;
   const CIRCUMFERENCE = 2 * Math.PI * 54;

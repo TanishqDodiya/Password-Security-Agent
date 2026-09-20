@@ -1,0 +1,14 @@
+fastapi==0.141.1
+uvicorn==0.53.0
+pydantic==2.13.5
+pydantic_core==2.46.5
+scikit-learn==1.7.2
+pandas==2.3.3
+numpy==2.2.6
+joblib==1.6.0
+langgraph==1.2.11
+langgraph-checkpoint==4.2.0
+langgraph-prebuilt==1.1.0
+langgraph-sdk==0.4.4
+langchain-core==1.6.3
+python-multipart==0.0.9

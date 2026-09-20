@@ -1,0 +1,39 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "frontend/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/health",
+      "dest": "api.py"
+    },
+    {
+      "src": "/info",
+      "dest": "api.py"
+    },
+    {
+      "src": "/analyze",
+      "dest": "api.py"
+    },
+    {
+      "src": "/generate",
+      "dest": "api.py"
+    },
+    {
+      "src": "/",
+      "dest": "frontend/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "frontend/$1"
+    }
+  ]
+}
