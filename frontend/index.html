@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Password Security Agent — deterministic heuristic analysis, LangGraph, RAG, ML evidence">
+  <meta name="color-scheme" content="dark">
+  <title>Password Security Agent — Security Workspace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg" aria-hidden="true">
+    <div class="bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+  </div>
+
+  <div class="app" id="app">
+    <aside class="sidebar glass" aria-label="Sidebar navigation">
+      <div class="sidebar-top">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+              <rect width="28" height="28" rx="8" fill="url(#g)"/>
+              <path d="M14 7.5a5.5 5.5 0 0 0-5.5 5.5c0 3.5 5.5 7.5 5.5 7.5s5.5-4 5.5-7.5A5.5 5.5 0 0 0 14 7.5Zm0 7.5a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z" fill="white" fill-opacity="0.95"/>
+              <defs><linearGradient id="g" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#8b5cf6"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Password Security Agent</span>
+            <span class="brand-sub">Heuristic Engine • LangGraph</span>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-new" id="newAnalysisBtn" type="button">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3.5V12.5M3.5 8H12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          New Analysis
+        </button>
+      </div>
+
+      <nav class="nav" aria-label="Primary">
+        <a href="#" class="nav-item active" data-page="dashboard" aria-current="page">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l7 4v5c0 4-3.5 7-7 8-3.5-1-7-4-7-8V7l7-4Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          Dashboard
+        </a>
+        <a href="#" class="nav-item" data-page="knowledge">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="1.5"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a1 1 0 0 1-1.4 1.4l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a1 1 0 0 1-1.4-1.4l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1 1.6 1.6 0 0 0-1.8.3l-.1.1A1 1 0 0 1 7 13.4l-.1-.1a1.6 1.6 0 0 0 .3-1.8A1.6 1.6 0 0 0 6.2 10a1.6 1.6 0 0 0-.3-1.8l-.1-.1A1 1 0 0 1 7.2 6.7l.1.1a1.6 1.6 0 0 0 1.8.3A1.6 1.6 0 0 0 10 6a1.6 1.6 0 0 0 1.8-.3l.1-.1A1 1 0 0 1 13.3 7l-.1.1a1.6 1.6 0 0 0-.3 1.8c.4.6 1 1 1.7 1Z" stroke="currentColor" stroke-width="1.2"/></svg>
+          Security Knowledge
+        </a>
+        <a href="#" class="nav-item" data-page="history">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h6l5 5v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Analysis History
+        </a>
+        <a href="#" class="nav-item" data-page="settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="1.5"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a1 1 0 0 1-1.4 1.4l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a1 1 0 0 1-1.4-1.4l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1 1.6 1.6 0 0 0-1.8.3l-.1.1A1 1 0 0 1 7 13.4l-.1-.1a1.6 1.6 0 0 0 .3-1.8A1.6 1.6 0 0 0 6.2 10a1.6 1.6 0 0 0-.3-1.8l-.1-.1A1 1 0 0 1 7.2 6.7l.1.1a1.6 1.6 0 0 0 1.8.3A1.6 1.6 0 0 0 10 6a1.6 1.6 0 0 0 1.8-.3l.1-.1A1 1 0 0 1 13.3 7l-.1.1a1.6 1.6 0 0 0-.3 1.8c.4.6 1 1 1.7 1Z" stroke="currentColor" stroke-width="1.2"/></svg>
+          Settings
+        </a>
+      </nav>
+
+      <div class="sidebar-spacer"></div>
+
+      <div class="usage glass-subtle">
+        <div class="usage-head">
+          <span class="usage-title">Heuristic Engine</span>
+          <span class="usage-badge">Active</span>
+        </div>
+        <div class="usage-bar" aria-hidden="true"><span style="width: 68%"></span></div>
+        <p class="usage-text">Deterministic 0–100 • ML evidence only • RAG on-device • No password stored</p>
+      </div>
+
+      <div class="profile">
+        <div class="avatar-sm" aria-hidden="true">PS</div>
+        <div class="profile-info">
+          <span class="profile-name">Security Analyst</span>
+          <span class="profile-role">Local workspace</span>
+        </div>
+        <button class="icon-btn" type="button" aria-label="Profile options">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/><circle cx="5" cy="12" r="1.5" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <header class="mobile-top glass">
+      <button class="icon-btn" id="menuBtn" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <span class="mobile-brand">Password Security Agent</span>
+      <span class="live-dot" aria-label="System online"></span>
+    </header>
+
+    <main class="workspace">
+      <div class="workspace-header">
+        <div>
+          <p class="eyebrow">PASSWORD SECURITY AGENT • NORDPASS-INSPIRED</p>
+          <h1 class="title">How secure is my password?</h1>
+          <p class="subtitle">Take a moment to check if your password is strong enough. Deterministic analysis, no password is stored.</p>
+        </div>
+        <div class="status glass-subtle">
+          <span class="status-dot"></span>
+          System online
+          <span class="status-sep">•</span>
+          <span class="mono">Heuristic 0–100</span>
+        </div>
+      </div>
+
+      <div class="perspective" id="perspective">
+        <section class="glass-panel workspace-panel" id="workspacePanel" aria-label="Password security workspace">
+          <!-- Password Input Card -->
+          <div class="input-card glass-subtle">
+            <div class="input-card-head">
+              <h2 class="card-title">Analyze password</h2>
+              <span class="card-eyebrow">Local • No storage • No logging</span>
+            </div>
+            <p class="card-desc">The password is analyzed in memory and never persisted. The heuristic engine is authoritative — ML is supporting evidence only.</p>
+
+            <div class="password-field" id="passwordField">
+              <label for="passwordInput" class="sr-only">Password</label>
+              <input id="passwordInput" class="password-input" type="password" placeholder="Enter password" autocomplete="new-password" spellcheck="false" aria-label="Password" />
+              <button class="icon-btn visibility-btn" id="toggleVisibilityBtn" type="button" aria-label="Show password" aria-pressed="false">
+                <svg class="icon-eye" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 12s3-6 10-6 10 6 10 6-3 6-10 6-10-6-10-6Z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/></svg>
+                <svg class="icon-eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="display:none"><path d="M3 3 21 21M10.6 10.6A3 3 0 0 0 12 15a3 3 0 0 0 2.4-1.2M9.9 5.2A10.6 10.6 0 0 1 12 5c7 0 10 7 10 7a17.4 17.4 0 0 1-2.7 3.8M14.4 14.4a3 3 0 0 1-4.2-4.2M6.5 8.5A17.4 17.4 0 0 0 2 12s3 6 10 6c1.2 0 2.3-.2 3.4-.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+
+            <div class="input-actions">
+              <button class="btn btn-primary btn-analyze" id="analyzeBtn" type="button">
+                <span class="btn-label">Analyze Password</span>
+                <svg class="btn-spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="display:none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.5" opacity="0.2"/><path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/></path></svg>
+              </button>
+              <button class="btn btn-ghost" id="clearBtn" type="button">Clear</button>
+            </div>
+            <p class="input-hint">Press Enter to analyze • Empty is allowed • No password is logged or stored</p>
+            <div class="error-banner" id="errorBanner" role="alert" hidden></div>
+          </div>
+
+          <!-- Generator Card -->
+          <div class="generator-card glass-subtle" id="generatorCard">
+            <div class="input-card-head">
+              <h2 class="card-title">Secure Generator</h2>
+              <span class="card-eyebrow">Secrets • Cryptographically secure</span>
+            </div>
+            <p class="card-desc">Generate a password with secure randomness. The same security engine will analyze it.</p>
+            <div class="generator-controls">
+              <label class="generator-label">Length: <span id="genLengthValue">16</span>
+                <input id="genLength" type="range" min="8" max="32" value="16" aria-label="Generated password length">
+              </label>
+              <div class="generator-options">
+                <label><input type="checkbox" id="genLower" checked> Lowercase</label>
+                <label><input type="checkbox" id="genUpper" checked> Uppercase</label>
+                <label><input type="checkbox" id="genDigits" checked> Numbers</label>
+                <label><input type="checkbox" id="genSymbols" checked> Symbols</label>
+              </div>
+              <div class="generator-actions">
+                <button class="btn btn-primary" id="generateBtn" type="button">Generate Password</button>
+                <button class="btn btn-ghost" id="generatePassphraseBtn" type="button">Generate Passphrase</button>
+              </div>
+            </div>
+            <div class="generated-output" id="generatedOutput" hidden>
+              <div class="password-field">
+                <input id="generatedPassword" class="password-input mono-sm" type="text" readonly aria-label="Generated password" />
+                <button class="icon-btn" id="copyGeneratedBtn" type="button" aria-label="Copy generated password">⧉</button>
+                <button class="icon-btn" id="useGeneratedBtn" type="button" aria-label="Use generated password">↗</button>
+              </div>
+              <p class="input-hint" id="copyHint" aria-live="polite"></p>
+            </div>
+          </div>
+
+          <!-- Loading state -->
+          <div class="loading-state glass-subtle" id="loadingState" hidden>
+            <div class="loading-spinner" aria-hidden="true"></div>
+            <p class="loading-title">Analyzing password…</p>
+            <p class="loading-sub">Checking structure • Evaluating patterns • Running heuristic assessment</p>
+          </div>
+
+          <!-- Results dashboard -->
+          <div class="results" id="results" hidden>
+            <!-- Score -->
+            <section class="result-card score-card glass-subtle" aria-label="Security score">
+              <div class="score-visual">
+                <svg class="score-ring" width="132" height="132" viewBox="0 0 132 132" aria-hidden="true">
+                  <circle cx="66" cy="66" r="54" stroke="rgba(255,255,255,0.08)" stroke-width="10" fill="none"/>
+                  <circle id="scoreProgress" cx="66" cy="66" r="54" stroke="url(#scoreGrad)" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="339.29" stroke-dashoffset="339.29" transform="rotate(-90 66 66)"/>
+                  <defs><linearGradient id="scoreGrad" x1="0" y1="0" x2="132" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#8b5cf6"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs>
+                </svg>
+                <div class="score-center">
+                  <span class="score-value" id="scoreValue">--</span>
+                  <span class="score-max">/ 100</span>
+                </div>
+              </div>
+              <div class="score-info">
+                <p class="score-label" id="riskLevel">—</p>
+                <p class="score-note">Heuristic Security Risk Score — engineering assessment, not probability</p>
+                <p class="score-explain" id="scoreExplain"></p>
+              </div>
+            </section>
+
+            <div class="results-grid">
+              <section class="result-card glass-subtle">
+                <h3 class="result-title">Character Composition</h3>
+                <div class="ml-grid" id="compositionGrid">
+                  <div><span class="meta-label">Length</span><span class="meta-value" id="compLength">—</span></div>
+                  <div><span class="meta-label">Unique</span><span class="meta-value" id="compUnique">—</span></div>
+                  <div><span class="meta-label">Lowercase</span><span class="meta-value" id="compLower">—</span></div>
+                  <div><span class="meta-label">Uppercase</span><span class="meta-value" id="compUpper">—</span></div>
+                  <div><span class="meta-label">Numbers</span><span class="meta-value" id="compDigits">—</span></div>
+                  <div><span class="meta-label">Symbols</span><span class="meta-value" id="compSpecial">—</span></div>
+                </div>
+                <p class="disclaimer">Character variety alone does not guarantee security.</p>
+              </section>
+              <section class="result-card glass-subtle">
+                <h3 class="result-title">Guessability &amp; Entropy</h3>
+                <div class="ml-grid">
+                  <div><span class="meta-label">Charset Size</span><span class="meta-value" id="entropyCharset">—</span></div>
+                  <div><span class="meta-label">Est. Entropy</span><span class="meta-value" id="entropyEstimated">—</span></div>
+                  <div><span class="meta-label">Shannon Entropy</span><span class="meta-value" id="entropyShannon">—</span></div>
+                  <div><span class="meta-label">Brute-force</span><span class="meta-value mono-sm" id="bruteForce">—</span></div>
+                </div>
+                <p class="disclaimer" id="entropyNote">High entropy alone does not mean secure if patterns exist.</p>
+              </section>
+            </div>
+
+            <div class="results-grid">
+              <section class="result-card glass-subtle">
+                <h3 class="result-title"><span class="dot-warn"></span> Detected Issues</h3>
+                <ul class="result-list" id="issuesList"></ul>
+                <p class="empty-state" id="issuesEmpty" hidden>No major structural issues detected.</p>
+              </section>
+              <section class="result-card glass-subtle">
+                <h3 class="result-title"><span class="dot-ok"></span> Positive Signals</h3>
+                <ul class="result-list" id="positiveList"></ul>
+                <p class="empty-state" id="positiveEmpty" hidden>No strong positive signals.</p>
+              </section>
+            </div>
+
+            <section class="result-card glass-subtle">
+              <h3 class="result-title">Why this assessment?</h3>
+              <p class="result-summary" id="whySummary"></p>
+              <ul class="result-list" id="whyList"></ul>
+              <div class="recommendations" id="recommendationsBlock" hidden>
+                <h4 class="result-subtitle">Recommendations</h4>
+                <ul class="result-list" id="recommendationsList"></ul>
+              </div>
+            </section>
+
+            <div class="results-grid">
+              <section class="result-card glass-subtle">
+                <h3 class="result-title">ML Dataset Evidence</h3>
+                <div class="ml-grid">
+                  <div><span class="meta-label">Predicted Class</span><span class="meta-value" id="mlClass">—</span></div>
+                  <div><span class="meta-label">Confidence</span><span class="meta-value" id="mlConfidence">—</span></div>
+                  <div><span class="meta-label">Model</span><span class="meta-value" id="mlModel">—</span></div>
+                  <div><span class="meta-label">Feature Set</span><span class="meta-value mono-sm" id="mlFeatureSet">—</span></div>
+                </div>
+                <p class="disclaimer" id="mlWarning"></p>
+                <details class="details" id="mlProbsDetails" hidden>
+                  <summary>Class probabilities</summary>
+                  <p class="mono-sm" id="mlProbs"></p>
+                </details>
+              </section>
+              <section class="result-card glass-subtle">
+                <h3 class="result-title">Security Knowledge</h3>
+                <ul class="result-list" id="knowledgeList"></ul>
+                <p class="empty-state" id="knowledgeEmpty" hidden>No additional knowledge retrieved.</p>
+              </section>
+            </div>
+
+            <section class="result-card glass-subtle">
+              <h3 class="result-title">Attack Resistance</h3>
+              <ul class="result-list" id="attackList"></ul>
+              <p class="disclaimer" id="attackNote">Credential stuffing exposure cannot be determined from this password alone; password reuse across services increases this risk.</p>
+              <div class="ml-grid" style="margin-top:10px">
+                <div><span class="meta-label">Search Space</span><span class="meta-value mono-sm" id="attackSearchSpace">—</span></div>
+                <div><span class="meta-label">Note</span><span class="meta-value" id="attackNote2" style="font-size:11px; font-weight:400">Avoid false precision</span></div>
+              </div>
+            </section>
+
+            <details class="details" id="rawDetails">
+              <summary>Technical details (for debugging)</summary>
+              <p class="mono-sm" id="technicalInfo"></p>
+            </details>
+          </div>
+
+          <!-- Security Knowledge Panel -->
+          <div class="knowledge-panel" id="knowledgePanel" hidden>
+            <div class="panel-head">
+              <h2 class="card-title">Security Knowledge</h2>
+              <button class="btn btn-ghost" data-back="dashboard" type="button">← Back to Dashboard</button>
+            </div>
+            <p class="card-desc">Concepts used by this agent. Content from local <code>knowledge/</code> — no external lookup, no passwords.</p>
+            <div class="knowledge-grid">
+              <section class="result-card glass-subtle">
+                <h3 class="result-title">Password Entropy</h3>
+                <p class="result-summary">Shannon entropy measures character distribution: <code>-Σ p·log2(p)</code>. Estimated entropy assumes random generation from charset (<code>length × log2(charset)</code>). High entropy indicates larger theoretical search space, but <strong>does not guarantee security</strong> if the password contains common patterns or words.</p>
+                <p class="disclaimer">Source: knowledge/password_length.md — longer passwords increase brute-force search space, but length alone is insufficient if predictable.</p>
+              </section>
+              <section class="result-card glass-subtle">
+                <h3 class="result-title">Brute-force Search Space</h3>
+                <p class="result-summary">Search space is <code>charset_size ^ length</code> (displayed as <code>2^log2</code>). Example: 62-char set (a-zA-Z0-9) with length 12 ≈ 2^71 combinations. This assumes random generation; predictable patterns drastically reduce effective resistance. Avoid false precision.</p>
+                <p class="disclaimer">Source: knowledge/password_length.md</p>
+              </section>
+              <section class="result-card glass-subtle">
+                <h3 class="result-title">Dictionary &amp; Common-password Attacks</h3>
+                <p class="result-summary">Local dataset top 500 and a small common-word list are checked. If a password equals or contains a common word (e.g., “password”, “admin”), it is flagged as <code>common_password</code> / <code>dictionary_word</code>. This is a local common-password check, not a breach lookup — we do not claim the password is breached.</p>
+                <p class="disclaimer">Sources: knowledge/common_patterns.md, knowledge/password_attacks.md</p>
+              </section>
+              <section class="result-card glass-subtle">
+                <h3 class="result-title">Keyboard &amp; Sequential Patterns</h3>
+                <p class="result-summary">Detects <code>qwerty</code>, <code>asdf</code>, <code>zxcv</code>, <code>1234</code>, sequential digits/letters (<code>123</code>, <code>abc</code>), repeated blocks (<code>abab</code>), and runs like <code>aaaa</code>. These are common walks attackers try first.</p>
+                <p class="disclaimer">Source: knowledge/common_patterns.md</p>
+              </section>
+              <section class="result-card glass-subtle">
+                <h3 class="result-title">Predictable Substitutions &amp; Years</h3>
+                <p class="result-summary">Leet substitutions (<code>a→@</code>, <code>s→$</code>) are flagged but <strong>not treated as strong protection</strong>. Year patterns (<code>19xx/20xx</code>) and date-like structures are flagged as predictable.</p>
+                <p class="disclaimer">Sources: knowledge/common_patterns.md, knowledge/password_attacks.md</p>
+              </section>
+              <section class="result-card glass-subtle">
+                <h3 class="result-title">Character Diversity &amp; Credential Stuffing</h3>
+                <p class="result-summary">Diversity = <code>unique / length</code>. Low diversity with length indicates repetition. Credential stuffing risk <strong>cannot be determined from this password alone</strong>; reuse across services increases it. Use unique passwords per service.</p>
+                <p class="disclaimer">Sources: knowledge/common_patterns.md, knowledge/password_reuse.md — “Credential stuffing exposure cannot be determined from this password alone; password reuse across services increases this risk.”</p>
+              </section>
+              <section class="result-card glass-subtle">
+                <h3 class="result-title">Entropy vs Guessability</h3>
+                <p class="result-summary">Mathematical entropy (randomness) differs from real-world guessability. A long password like <code>password123456</code> has high theoretical entropy but low guessability due to dictionary + sequential patterns. The agent prioritizes guessability signals over entropy alone.</p>
+                <p class="disclaimer">Source: knowledge/password_length.md + common_patterns.md</p>
+              </section>
+            </div>
+          </div>
+
+          <!-- Analysis History Panel -->
+          <div class="history-panel" id="historyPanel" hidden>
+            <div class="panel-head">
+              <h2 class="card-title">Analysis History</h2>
+              <button class="btn btn-ghost" data-back="dashboard" type="button">← Back to Dashboard</button>
+            </div>
+            <p class="card-desc">In-memory only for this session. Stores safe metadata — never plaintext passwords. Refresh clears history.</p>
+            <div class="history-actions">
+              <button class="btn btn-ghost" id="clearHistoryBtn" type="button">Clear History</button>
+              <span class="mono-sm" id="historyCount">0 analyses</span>
+            </div>
+            <div class="empty-state" id="historyEmpty">No analyses yet. Analyze a password to see history.</div>
+            <ul class="history-list" id="historyList" hidden></ul>
+          </div>
+
+          <!-- Settings Panel -->
+          <div class="settings-panel" id="settingsPanel" hidden>
+            <div class="panel-head">
+              <h2 class="card-title">Settings</h2>
+              <button class="btn btn-ghost" data-back="dashboard" type="button">← Back to Dashboard</button>
+            </div>
+            <p class="card-desc">All settings affect this session only and are not persisted with passwords.</p>
+            <div class="settings-grid">
+              <label class="setting-row glass-subtle">
+                <span><strong>Reduced motion</strong><br><span class="mono-sm">Disable 3D tilt and orb animations</span></span>
+                <input type="checkbox" id="settingReducedMotion">
+              </label>
+              <label class="setting-row glass-subtle">
+                <span><strong>Auto-analyze generated passwords</strong><br><span class="mono-sm">Immediately analyze after Generate</span></span>
+                <input type="checkbox" id="settingAutoAnalyze" checked>
+              </label>
+              <label class="setting-row glass-subtle">
+                <span><strong>Generator default length</strong><br><span class="mono-sm">8–32</span></span>
+                <input type="range" id="settingGenLength" min="8" max="32" value="16">
+                <span class="mono-sm" id="settingGenLengthValue">16</span>
+              </label>
+              <div class="setting-row glass-subtle">
+                <span><strong>Default character sets</strong><br><span class="mono-sm">Used when generating</span></span>
+                <div class="generator-options" style="margin-left:auto">
+                  <label><input type="checkbox" id="settingLower" checked> Lowercase</label>
+                  <label><input type="checkbox" id="settingUpper" checked> Uppercase</label>
+                  <label><input type="checkbox" id="settingDigits" checked> Numbers</label>
+                  <label><input type="checkbox" id="settingSymbols" checked> Symbols</label>
+                </div>
+              </div>
+            </div>
+            <p class="disclaimer">Settings are in-memory only and affect current session. No password data is stored.</p>
+          </div>
+
+        </section>
+      </div>
+      <p class="footer-note">Local analysis only • RAG on-device • ML is evidence, not verdict • No password is stored</p>
+    </main>
+  </div>
+
+  <div class="overlay" id="overlay" hidden></div>
+  <script src="script.js"></script>
+</body>
+</html>
